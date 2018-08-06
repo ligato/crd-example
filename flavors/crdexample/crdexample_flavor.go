@@ -18,9 +18,9 @@ package crdexample
 import (
 	"github.com/ligato/cn-infra/config"
 	"github.com/ligato/cn-infra/core"
-	"github.com/ligato/crd-example/plugins/crd"
 	"github.com/ligato/cn-infra/flavors/local"
 	"github.com/ligato/cn-infra/flavors/rpc"
+	"github.com/ligato/crd-example/plugins/crd"
 )
 
 const (

@@ -17,7 +17,7 @@ package v1
 import (
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/ligato/crd-example/crdexample"
+	"github.com/ligato/crd-example/pkg/crdexample"
 )
 
 // CRD Constants

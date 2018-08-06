@@ -30,11 +30,11 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/ligato/cn-infra/config"
+	"github.com/ligato/cn-infra/flavors/local"
+	"github.com/ligato/cn-infra/logging"
 	"github.com/ligato/crd-example/pkg/apis/crdexample.io/v1"
 	client "github.com/ligato/crd-example/pkg/client/clientset/versioned"
 	factory "github.com/ligato/crd-example/pkg/client/informers/externalversions"
-	"github.com/ligato/cn-infra/flavors/local"
-	"github.com/ligato/cn-infra/logging"
 )
 
 // Plugin watches K8s resources and causes all changes to be reflected in the ETCD

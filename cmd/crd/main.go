@@ -19,7 +19,7 @@ import (
 	"os"
 
 	"github.com/ligato/cn-infra/core"
-	"github.com/ligato/crd-example/plugin/flavors/crdexample"
+	"github.com/ligato/crd-example/flavors/crdexample"
 )
 
 // crdexample main entry point.

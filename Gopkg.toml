@@ -45,6 +45,29 @@ required = [
   name = "k8s.io/code-generator"
   version = "kubernetes-1.11.1"
 
+[[override]]
+  name = "k8s.io/api"
+  version = "kubernetes-1.11.1"
+
+[[override]]
+  name = "k8s.io/apiextensions-apiserver"
+  version = "kubernetes-1.11.1"
+
+[[override]]
+  name = "k8s.io/apimachinery"
+  version = "kubernetes-1.11.1"
+
+[[constraint]]
+  name = "k8s.io/client-go"
+  version = "8.0.0"
+
+[[override]]
+  name = "k8s.io/kubernetes"
+  # kubernetes-1.11.1 resolves to b1b29978270dc22fecc592ac55d903350454310a
+  # We set the revision to work around a transitive constraint issue introduced
+  # in an interaction between k8s.io/client-go and k8s.io/kubernetes
+  revision = "b1b29978270dc22fecc592ac55d903350454310a"
+
 [prune]
   go-tests = true
   unused-packages = true
