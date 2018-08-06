@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ligato/crd-example.svg?branch=master)](https://travis-ci.org/ligato/crd-example)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20license%202.0-blue.svg)](https://github.com/ligato/crd-example/blob/master/LICENSE)
 
 Custom Resource Definition Example
 ==================================
