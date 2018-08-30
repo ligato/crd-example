@@ -92,6 +92,15 @@ test-race:
 vet:
 	${GOVET} ${GOVETTARGETS}
 
+# Install yamllint
+get-yamllint:
+	pip install --user yamllint
+
+# Lint the yaml files
+yamllint: get-yamllint
+	@echo "=> linting the yaml files"
+	yamllint -c .yamllint.yml $(shell git ls-files '*.yaml' '*.yml' | grep -v 'vendor/')
+
 # Test target to debug proxy issues
 checkproxy:
 	echo "HTTPBUILD=${HTTPBUILD} HTTPSBUILD=${HTTPSBUILD}"

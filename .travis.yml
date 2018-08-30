@@ -1,3 +1,4 @@
+---
 sudo: required
 
 language: go
@@ -10,13 +11,13 @@ go:
 go_import_path: github.com/ligato/crd-example
 
 before_install:
-- ./.travis/update-docker.sh
+  - ./.travis/update-docker.sh
 
 before_script:
-- sudo mount --make-rshared /
-- sudo mount --make-rshared /sys
-- sudo mount --make-rshared /var/run
+  - sudo mount --make-rshared /
+  - sudo mount --make-rshared /sys
+  - sudo mount --make-rshared /var/run
 
 script:
-- make all
-
+  - make yamllint
+  - make all
