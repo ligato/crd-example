@@ -35,6 +35,8 @@ import (
 	"github.com/ligato/crd-example/pkg/apis/crdexample.io/v1"
 	client "github.com/ligato/crd-example/pkg/client/clientset/versioned"
 	factory "github.com/ligato/crd-example/pkg/client/informers/externalversions"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // Plugin watches K8s resources and causes all changes to be reflected in the ETCD
@@ -178,9 +180,34 @@ func createCRD(plugin *Plugin, FullName, Group, Version, Plural, Name string) er
 			Validation: validation,
 		},
 	}
-	_, cserr := plugin.apiclientset.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
 
-	return cserr
+	crdClient := plugin.apiclientset.ApiextensionsV1beta1().CustomResourceDefinitions()
+
+	// First check if the CRD already exists
+	oldCRD, err := crdClient.Get(crd.Name, metav1.GetOptions{})
+	if err != nil && !apierrors.IsNotFound(err) {
+		plugin.Log.Errorf("error getting CRD %s, type %s", crd.Name, crd.Spec.Names.Kind)
+		return err
+	}
+	if apierrors.IsNotFound(err) {
+		// If the CRD does not exist, try to create it
+		if _, err := crdClient.Create(crd); err != nil {
+			plugin.Log.Errorf("error creating CRD %s, type %s", crd.Name, crd.Spec.Names.Kind)
+			return err
+		}
+		plugin.Log.Infof("created CRD %s, type %s", crd.Name, crd.Spec.Names.Kind)
+	}
+	if err == nil {
+		// Now we try to update the CRD
+		crd.ResourceVersion = oldCRD.ResourceVersion
+		if _, err := crdClient.Update(crd); err != nil {
+			plugin.Log.Errorf("error updating CRD %s, type %s", crd.Name, crd.Spec.Names.Kind)
+			return err
+		}
+		plugin.Log.Infof("updated CRD %s, type %s", crd.Name, crd.Spec.Names.Kind)
+	}
+
+	return nil
 }
 
 func informerCrdExample(plugin *Plugin) {
