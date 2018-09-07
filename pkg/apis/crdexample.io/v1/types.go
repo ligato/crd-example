@@ -15,6 +15,8 @@
 package v1
 
 import (
+	"reflect"
+
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/ligato/crd-example/pkg/crdexample"
@@ -24,15 +26,24 @@ import (
 const (
 	Group                   string = "crdexample.io"
 	GroupVersion            string = "v1"
-	CRDExamplePlural        string = "crdexamples"
-	FullCRDExampleName      string = CRDExamplePlural + "." + Group
-	CRDExampleEmbedPlural   string = "crdexampleembeds"
-	FullCRDExampleEmbedName string = CRDExampleEmbedPlural + "." + Group
+	CRDSpecPath             string = "github.com/ligato/crd-example/pkg/apis" + Group
+	CRDExampleSingular      string = "crdexample"
+	CRDExamplePlural        string = CRDExampleSingular + "s"
+	CRDExampleEmbedSingular string = "crdexampleembed"
+	CRDExampleEmbedPlural   string = CRDExampleEmbedSingular + "s"
+)
+
+var (
+	CRDExampleTypeName      = reflect.TypeOf(CrdExample{}).Name()
+	FullCRDExampleName      = CRDSpecPath + "/" + GroupVersion + "." + CRDExampleTypeName
+	CRDExampleEmbedTypeName = reflect.TypeOf(CrdExampleEmbed{}).Name()
+	FullCRDExampleEmbedName = CRDSpecPath + "/" + GroupVersion + "." + CRDExampleEmbedTypeName
 )
 
 // CrdExample CRD
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:openapi-gen=true
 type CrdExample struct {
 	meta.TypeMeta   `json:",inline"`
 	meta.ObjectMeta `json:"metadata,omitempty"`
@@ -49,6 +60,7 @@ type CrdExampleStatus struct {
 // CrdExampleList is the list schema for this CRD
 // -genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:openapi-gen=true
 type CrdExampleList struct {
 	meta.TypeMeta `json:",inline"`
 	// +optional
@@ -59,6 +71,7 @@ type CrdExampleList struct {
 // CrdExampleEmbed CRD
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:openapi-gen=true
 type CrdExampleEmbed struct {
 	meta.TypeMeta   `json:",inline"`
 	meta.ObjectMeta `json:"metadata,omitempty"`
@@ -75,6 +88,7 @@ type CrdExampleEmbedStatus struct {
 // CrdExampleEmbedList is the list schema for this CRD
 // -genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +k8s:openapi-gen=true
 type CrdExampleEmbedList struct {
 	meta.TypeMeta `json:",inline"`
 	// +optional
