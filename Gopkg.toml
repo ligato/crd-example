@@ -30,7 +30,8 @@ required = [
   "k8s.io/code-generator/cmd/deepcopy-gen",
   "k8s.io/code-generator/cmd/defaulter-gen",
   "k8s.io/code-generator/cmd/informer-gen",
-  "k8s.io/code-generator/cmd/lister-gen"
+  "k8s.io/code-generator/cmd/lister-gen",
+  "k8s.io/kube-openapi/cmd/openapi-gen"
 ]
 
 [[override]]
@@ -61,6 +62,18 @@ required = [
   name = "k8s.io/client-go"
   version = "8.0.0"
 
+[[constraint]]
+  branch = "master"
+  name = "github.com/ant31/crd-validation"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/go-openapi/spec"
+
+[[constraint]]
+  branch = "master"
+  name = "k8s.io/kube-openapi"
+
 [[override]]
   name = "k8s.io/kubernetes"
   # kubernetes-1.11.1 resolves to b1b29978270dc22fecc592ac55d903350454310a
@@ -76,4 +89,8 @@ required = [
     name = "k8s.io/code-generator"
     unused-packages = false
     go-tests = false
+
+  [[prune.project]]
+    name = "k8s.io/kube-openapi"
+    unused-packages = false
 

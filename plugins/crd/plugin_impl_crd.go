@@ -17,13 +17,14 @@
 package exampleplugincrd
 
 import (
+	"flag"
 	"fmt"
 	"reflect"
 	"time"
 
+	crdutils "github.com/ant31/crd-validation/pkg"
 	apiextv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	apiextcs "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
-	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
@@ -71,6 +72,10 @@ type Deps struct {
 	// Kubeconfig with k8s cluster address and access credentials to use.
 	KubeConfig config.PluginConfig
 }
+
+var (
+	cfg crdutils.Config
+)
 
 // Init builds K8s client-set based on the supplied kubeconfig and initializes
 // all reflectors.
@@ -157,29 +162,20 @@ func exampleCrdEmbedValidation() *apiextv1beta1.CustomResourceValidation {
 
 // Create the CRD resource, ignore error if it already exists
 func createCRD(plugin *Plugin, FullName, Group, Version, Plural, Name string) error {
+	flagset := flag.NewFlagSet(Name, flag.ExitOnError)
+	flagset.Var(&cfg.Labels, "labels", "Labels")
 
-	var validation *apiextv1beta1.CustomResourceValidation
-	switch Name {
-	case "CrdExample":
-		validation = exampleCrdValidation()
-	case "CrdExampleEmbed":
-		validation = exampleCrdEmbedValidation()
-	default:
-		validation = &apiextv1beta1.CustomResourceValidation{}
-	}
-	crd := &apiextv1beta1.CustomResourceDefinition{
-		ObjectMeta: meta.ObjectMeta{Name: FullName},
-		Spec: apiextv1beta1.CustomResourceDefinitionSpec{
-			Group:   Group,
-			Version: Version,
-			Scope:   apiextv1beta1.NamespaceScoped,
-			Names: apiextv1beta1.CustomResourceDefinitionNames{
-				Plural: Plural,
-				Kind:   Name,
-			},
-			Validation: validation,
-		},
-	}
+	crd := crdutils.NewCustomResourceDefinition(crdutils.Config{
+		SpecDefinitionName:    FullName,
+		EnableValidation:      true,
+		Labels:                crdutils.Labels{LabelsMap: cfg.Labels.LabelsMap},
+		ResourceScope:         string(apiextv1beta1.NamespaceScoped),
+		Group:                 Group,
+		Kind:                  Name,
+		Version:               Version,
+		Plural:                Plural,
+		GetOpenAPIDefinitions: v1.GetOpenAPIDefinitions,
+	})
 
 	crdClient := plugin.apiclientset.ApiextensionsV1beta1().CustomResourceDefinitions()
 
@@ -245,7 +241,6 @@ func informerCrdExampleEmbed(plugin *Plugin) {
 // AfterInit This will create all of the CRDs for NetworkServiceMesh.
 func (plugin *Plugin) AfterInit() error {
 	var err error
-	var crdname string
 
 	// Create clientset and create our CRD, this only needs to run once
 	plugin.apiclientset, err = apiextcs.NewForConfig(plugin.k8sClientConfig)
@@ -260,24 +255,22 @@ func (plugin *Plugin) AfterInit() error {
 		panic(err.Error())
 	}
 
-	crdname = reflect.TypeOf(v1.CrdExample{}).Name()
 	err = createCRD(plugin, v1.FullCRDExampleName,
 		v1.Group,
 		v1.GroupVersion,
 		v1.CRDExamplePlural,
-		crdname)
+		v1.CRDExampleTypeName)
 
 	if err != nil {
 		plugin.Log.Error("Error initializing CrdExample CRD")
 		return err
 	}
 
-	crdname = reflect.TypeOf(v1.CrdExampleEmbed{}).Name()
 	err = createCRD(plugin, v1.FullCRDExampleEmbedName,
 		v1.Group,
 		v1.GroupVersion,
 		v1.CRDExampleEmbedPlural,
-		crdname)
+		v1.CRDExampleEmbedTypeName)
 
 	if err != nil {
 		plugin.Log.Error("Error initializing CrdExampleEmbed CRD")

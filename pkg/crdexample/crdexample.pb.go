@@ -18,6 +18,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+// +k8s:openapi-gen=true
 type CrdExample struct {
 	Name                 string                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Uuid                 string                        `protobuf:"bytes,2,opt,name=uuid,proto3" json:"uuid,omitempty"`

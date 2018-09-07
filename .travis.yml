@@ -19,5 +19,6 @@ before_script:
   - sudo mount --make-rshared /var/run
 
 script:
+  - go install ./vendor/k8s.io/kube-openapi/cmd/openapi-gen
   - make yamllint
   - make all

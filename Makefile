@@ -60,7 +60,7 @@ check:
 	@shellcheck `find . -name "*.sh" -not -path "./vendor/*"`
 
 verify:
-	@./scripts/verify-codegen.sh
+	@./scripts/update-codegen.sh && ./scripts/add-openapi-bits.sh && ./scripts/verify-codegen.sh
 
 DOCKER_RELEASE=ligato/crd-example
 docker-build:
