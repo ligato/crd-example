@@ -74,6 +74,10 @@ required = [
   branch = "master"
   name = "k8s.io/kube-openapi"
 
+[[constraint]]
+  branch = "2.x"
+  name = "github.com/Masterminds/semver"
+
 [[override]]
   name = "k8s.io/kubernetes"
   # kubernetes-1.11.1 resolves to b1b29978270dc22fecc592ac55d903350454310a
