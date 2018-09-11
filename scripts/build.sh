@@ -3,7 +3,7 @@
 # This script builds the networkservicemesh
 #
 
-set -e
+set -xe
 
 export RACE_ENABLED="-race"
 while test $# -gt 0; do
@@ -19,8 +19,9 @@ while test $# -gt 0; do
 done
 
 [ -d vendor/github.com/ligato/crd-example/ ] && (echo "Run: rm -rf vendor/github.com/ligato/crd-example;dep ensure";exit 1)
-test -z "$(go fmt ./...)" || (echo "Run go fmt ./... and recommit your code";exit 1)
-go get -u github.com/golang/protobuf/protoc-gen-go
-go generate ./...
-go install ./...
-go test $RACE_ENABLED ./...
+test -z "$(env GO111MODULE=on go fmt ./...)" || (echo "Run go fmt ./... and recommit your code";exit 1)
+env GO111MODULE=on go get -u github.com/golang/protobuf/protoc-gen-go
+env GO111MODULE=on go generate ./...
+env GO111MODULE=on go build ./...
+env GO111MODULE=on go test $RACE_ENABLED ./...
+env GO111MODULE=on go install ./...
