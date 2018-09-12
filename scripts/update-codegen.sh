@@ -16,7 +16,7 @@ else
 fi
 
 echo "Calling ${CODEGEN_PKG}/generate-groups.sh"
-"${CODEGEN_PKG}"/generate-groups.sh all \
+bash "${CODEGEN_PKG}"/generate-groups.sh all \
   github.com/ligato/crd-example/pkg/client github.com/ligato/crd-example/pkg/apis \
   crdexample.io:v1 \
   --output-base "${GOPATH}/src/" \
