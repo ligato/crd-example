@@ -30,16 +30,29 @@ Running the Example
 The example requires a working Kubernetes install. A Minikube install will work
 just fine.
 
-To build and install the example:
+To build and install the example using go v1.10.x:
 
 ```
-go install ./...
+make all
+```
+
+To build and install the example using go v1.11.x:
+
+```
+GO111MODULE=on make all
 ```
 
 To run the example:
 
 ```
-$GOPATH/bin/crd -microservice-label=crdexample -http-config=./cmd/crd/http.conf -kube-config=/home/localadmin/.kube/config
+kubectl label --overwrite nodes docker-for-desktop app=crdservice-node
+kubectl create -f conf/crd-daemonset.yaml
+```
+
+If you want to stop the example:
+
+```
+kubectl delete -f conf/crd-daemonset.yaml
 ```
 
 Updating the Generated Code
