@@ -14,7 +14,7 @@ spec:
       serviceAccountName: crdexample
       containers:
         - name: crd
-          image: ligato-crd-example/crdexample
+          image: ligato/crd-example
           imagePullPolicy: IfNotPresent
 
 ---
