@@ -12,7 +12,7 @@ if [ "$(go version | grep 1.11)" == "" ]; then
 	CODEGEN_PKG="${GOPATH}/src/k8s.io/code-generator"
 else
 	env GO111MODULE=on go get -u k8s.io/code-generator
-	CODEGEN_PKG="${GOPATH}/pkg/mod/k8s.io/code-generator"
+	CODEGEN_PKG="${GOPATH}/pkg/mod/$(GO111MODULE=on go mod graph|grep code-generator | cut -d ' ' -f 2)"
 fi
 
 echo "Calling ${CODEGEN_PKG}/generate-groups.sh"
