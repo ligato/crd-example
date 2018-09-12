@@ -7,6 +7,7 @@ service:
 
 go:
   - "1.10.x"
+  - "1.11.x"
 
 go_import_path: github.com/ligato/crd-example
 
@@ -19,6 +20,6 @@ before_script:
   - sudo mount --make-rshared /var/run
 
 script:
-  - go install ./vendor/k8s.io/kube-openapi/cmd/openapi-gen
+  - env GO111MODULE=on go get k8s.io/kube-openapi/cmd/openapi-gen
   - make yamllint
-  - make all
+  - env GO111MODULE=on make all

@@ -61,6 +61,7 @@ check:
 
 verify:
 	@./scripts/update-codegen.sh && ./scripts/add-openapi-bits.sh && ./scripts/verify-codegen.sh
+	@if [ "$(go version | grep 1.11)" != "" ]; then env GO111MODULE=on go mod verify ; fi
 
 DOCKER_RELEASE=ligato/crd-example
 docker-build:
