@@ -7,9 +7,13 @@ set -o nounset
 set -o pipefail
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[@]}")/..
-env GO111MODULE=on go get -u k8s.io/code-generator
-CODEGEN_PKG="${GOPATH}/src/k8s.io/code-generator"
-ls -R "${GOPATH}"
+if [ "$(go version | grep 1.11)" == "" ]; then
+	go get -u k8s.io/code-generator
+	CODEGEN_PKG="${GOPATH}/src/k8s.io/code-generator"
+else
+	env GO111MODULE=on go get -u k8s.io/code-generator
+	CODEGEN_PKG="${GOPATH}/pkg/mod/k8s.io/code-generator"
+fi
 
 echo "Calling ${CODEGEN_PKG}/generate-groups.sh"
 "${CODEGEN_PKG}"/generate-groups.sh all \
