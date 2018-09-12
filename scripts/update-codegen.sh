@@ -7,16 +7,10 @@ set -o nounset
 set -o pipefail
 
 SCRIPT_ROOT=$(dirname "${BASH_SOURCE[@]}")/..
-if [ "$(go version | grep 1.11)" == "" ]; then
-	go get -u k8s.io/code-generator
-	CODEGEN_PKG="${GOPATH}/src/k8s.io/code-generator"
-else
-	env GO111MODULE=on go get -u k8s.io/code-generator
-	CODEGEN_PKG="${GOPATH}/pkg/mod/$(GO111MODULE=on go mod graph|grep code-generator | cut -d ' ' -f 2)"
-fi
+CODEGEN_PKG="${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}"
 
 echo "Calling ${CODEGEN_PKG}/generate-groups.sh"
-bash "${CODEGEN_PKG}"/generate-groups.sh all \
+"${CODEGEN_PKG}"/generate-groups.sh all \
   github.com/ligato/crd-example/pkg/client github.com/ligato/crd-example/pkg/apis \
   crdexample.io:v1 \
   --output-base "${GOPATH}/src/" \
